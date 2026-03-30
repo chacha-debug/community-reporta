@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report an Issue - CommUnity Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #27ae60;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .nav-menu li a:hover {
+            color: #27ae60;
+        }
+        
+        .nav-menu li a.active {
+            color: #27ae60;
+        }
+        
+        .nav-menu li a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #27ae60;
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 200px);
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Two Column Layout */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .form-header h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        
+        .form-header p {
+            color: #666;
+            font-size: 0.875rem;
+        }
+        
+        .form-body {
+            padding: 1.5rem;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 0.25rem;
+        }
+        
+        .form-group label .optional {
+            color: #999;
+            font-weight: normal;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 2px rgba(39,174,96,0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* Photo Upload */
+        .photo-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        
+        .photo-upload:hover {
+            border-color: #27ae60;
+            background: #f0fdf4;
+        }
+        
+        .photo-icon {
+            font-size: 2.5rem;
+            color: #999;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .photo-hint {
+            color: #666;
+            font-size: 0.875rem;
+        }
+        
+        .photo-preview {
+            margin-top: 1rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .photo-preview.active {
+            display: block;
+        }
+        
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #27ae60;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        /* Location Row */
+        .location-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .location-row input {
+            flex: 1;
+        }
+        
+        .location-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 0 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .location-btn:hover {
+            background: #d5dbdb;
+        }
+        
+        /* Issue Type Categories */
+        .issue-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .category-btn {
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover {
+            border-color: #27ae60;
+            background: #f0fdf4;
+        }
+        
+        .category-btn.active {
+            border-color: #27ae60;
+            background: #e8f5e9;
+        }
+        
+        .category-icon {
+            font-size: 1.25rem;
+            margin-right: 0.5rem;
+        }
+        
+        .category-name {
+            font-weight: 500;
+        }
+        
+        /* Issue Details Dropdown */
+        .issue-details-group {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #e0e0e0;
+        }
+        
+        .issue-details-group.active {
+            display: block;
+        }
+        
+        .issue-details-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #2c3e50;
+        }
+        
+        .issue-details-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #219a52;
+        }
+        
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        /* Map Container */
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .map-header {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .map-header h2 {
+            font-size: 1.25rem;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .search-bar button {
+            padding: 0.5rem 1rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .map-tabs {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .map-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .map-tab.active {
+            background: #27ae60;
+            color: white;
+        }
+        
+        #map {
+            height: 350px;
+            width: 100%;
+        }
+        
+        /* Map Legend */
+        .map-legend {
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .map-legend h4 {
+            font-size: 0.875rem;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .legend-color.red { background: #e74c3c; }
+        .legend-color.green { background: #27ae60; }
+        .legend-color.yellow { background: #f1c40f; }
+        .legend-color.orange { background: #e67e22; }
+        .legend-color.purple { background: #9b59b6; }
+        .legend-color.brown { background: #8e5e3c; }
+        .legend-color.blue { background: #3498db; }
+        .legend-color.gray { background: #95a5a6; }
+        .legend-color.lightblue { background: #5dade2; }
+        
+        .legend-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 0.75rem 0;
+        }
+        
+        .legend-note {
+            margin-top: 0.75rem;
+            font-size: 0.7rem;
+            color: #666;
+            text-align: center;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        /* Location Popup */
+        .location-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            max-width: 320px;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .location-popup.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .popup-header {
+            background: #27ae60;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .popup-header h4 {
+            font-size: 0.875rem;
+        }
+        
+        .popup-close {
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .popup-body {
+            padding: 1rem;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .popup-issue {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .popup-issue:last-child {
+            border-bottom: none;
+        }
+        
+        .popup-issue-marker {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+        
+        .popup-issue-content {
+            flex: 1;
+        }
+        
+        .popup-issue-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        
+        .popup-issue-category {
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .popup-issue-status {
+            font-size: 0.7rem;
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            background: #f0f0f0;
+        }
+        
+        .no-issues {
+            text-align: center;
+            padding: 1.5rem;
+            color: #666;
+        }
+        
+        .no-issues i {
+            font-size: 2rem;
+            color: #27ae60;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.25rem;
+            color: #2c3e50;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .reference-box {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        
+        .reference-number {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #27ae60;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        
+        .copy-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: #d5dbdb;
+        }
+        
+        .copy-btn.copied {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .modal-btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .modal-btn-primary:hover {
+            background: #219a52;
+        }
+        
+        .modal-btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .modal-btn-secondary:hover {
+            background: #d5dbdb;
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2500;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #27ae60;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.125rem;
+        }
+        
+        .loading-subtext {
+            color: rgba(255,255,255,0.7);
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Confirm Modal */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1800;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .confirm-modal.active {
+            display: flex;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .footer p {
+            margin: 0.5rem 0;
+        }
+        
+        .footer a {
+            color: #27ae60;
+            text-decoration: none;
+        }
+        
+        .back-to-top {
+            color: #27ae60;
+            font-weight: bold;
+            text-decoration: underline;
+            transition: color 0.3s, transform 0.3s;
+        }
+        
+        .back-to-top:hover {
+            color: #2ecc71;
+            transform: translateY(-2px);
+        }
+        
+        /* Accessibility Controls */
+        .accessibility-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .accessibility-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            background: rgba(44, 62, 80, 0.95);
+        }
+        
+        .accessibility-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: rgba(44, 62, 80, 0.95);
+            border-radius: 40px;
+            padding: 0;
+            backdrop-filter: blur(5px);
+        }
+        
+        .font-controls .accessibility-btn {
+            background: transparent;
+            box-shadow: none;
+            border-radius: 40px;
+            padding: 10px 14px;
+        }
+        
+        .font-controls .accessibility-btn:hover {
+            background: #27ae60;
+        }
+        
+        .recent-activity {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+            background: #ffffff;
+            margin-top: 1rem;
+        }
+        
+        .recent-activity h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .recent-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+        
+        .recent-item:hover {
+            background: #fafafa;
+            padding-left: 5px;
+        }
+        
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+        
+        .recent-item strong {
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        
+        .recent-item i {
+            margin-right: 4px;
+            font-size: 0.7rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-container {
+                position: static;
+                margin-top: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .issue-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .legend-items {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .accessibility-controls {
+                bottom: 10px;
+                right: 10px;
+                gap: 5px;
+            }
+            
+            .accessibility-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .accessibility-btn span {
+                display: none;
+            }
+            
+            .accessibility-btn i {
+                margin: 0;
+            }
+            
+            .font-controls .accessibility-btn {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container" id="header">
+            <div class="logo">
+                <a href="/">CommUnity <span>Reporta</span></a>
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/report/" class="active">Report Issue</a></li>
+                <li><a href="/track/">Track Issue</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="two-columns">
+                <!-- Report Form Column -->
+                <div class="form-container">
+                    <div class="form-header">
+                        <h1>Report an Issue</h1>
+                        <p>Help your community by reporting service delivery problems</p>
+                    </div>
+                    
+                    <div class="form-body">
+                        <form id="reportForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <!-- Photo Upload (Optional) -->
+                            <div class="form-group">
+                                <label>Photo <span class="optional">(Optional)</span></label>
+                                <div class="photo-upload" onclick="document.getElementById('photo-input').click()">
+                                    <i class="fas fa-camera photo-icon"></i>
+                                    <span class="photo-hint">Click to upload a photo</span>
+                                </div>
+                                <input type="file" id="photo-input" name="photo" accept="image/*" onchange="previewPhoto(this)">
+                                <div class="photo-preview" id="photo-preview">
+                                    <img id="preview-image" src="#" alt="Preview">
+                                </div>
+                            </div>
+                            
+                            <!-- Location (Required) -->
+                            <div class="form-group">
+                                <label>Location <span class="required">*</span></label>
+                                <div class="location-row">
+                                    <input type="text" name="location" id="location" placeholder="Enter address or coordinates" required>
+                                    <button type="button" class="location-btn" onclick="getCurrentLocation()" title="Use my current location">
+                                        <i class="fas fa-location-dot"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Issue Type Categories -->
+                            <div class="form-group">
+                                <label>Issue Category <span class="required">*</span></label>
+                                <div class="issue-categories">
+                                    <div class="category-btn" data-category="streetlights" data-color="red">
+                                        <i class="fas fa-lightbulb category-icon"></i>
+                                        <span class="category-name">Streetlights</span>
+                                    </div>
+                                    <div class="category-btn" data-category="water" data-color="green">
+                                        <i class="fas fa-tint category-icon"></i>
+                                        <span class="category-name">Water Leaks</span>
+                                    </div>
+                                    <div class="category-btn" data-category="waste" data-color="yellow">
+                                        <i class="fas fa-trash category-icon"></i>
+                                        <span class="category-name">Waste & Sanitation</span>
+                                    </div>
+                                    <div class="category-btn" data-category="pothole" data-color="orange">
+                                        <i class="fas fa-road category-icon"></i>
+                                        <span class="category-name">Roads & Potholes</span>
+                                    </div>
+                                    <div class="category-btn" data-category="environment" data-color="purple">
+                                        <i class="fas fa-leaf category-icon"></i>
+                                        <span class="category-name">Environment & Public Health</span>
+                                    </div>
+                                    <div class="category-btn" data-category="parks" data-color="brown">
+                                        <i class="fas fa-tree category-icon"></i>
+                                        <span class="category-name">Parks, Trees & Biodiversity</span>
+                                    </div>
+                                    <div class="category-btn" data-category="electricity" data-color="blue">
+                                        <i class="fas fa-bolt category-icon"></i>
+                                        <span class="category-name">Electricity</span>
+                                    </div>
+                                    <div class="category-btn" data-category="infrastructure" data-color="gray">
+                                        <i class="fas fa-building category-icon"></i>
+                                        <span class="category-name">Infrastructure Projects</span>
+                                    </div>
+                                </div>
+                                <select name="issue_type" id="issue_type" style="display: none;">
+                                    <option value="">Select an issue type</option>
+                                </select>
+                                
+                                <!-- Issue Details Dropdown (appears only when category selected) -->
+                                <div class="issue-details-group" id="issueDetailsGroup">
+                                    <label>Issue Details <span class="required">*</span></label>
+                                    <select class="issue-details-select" id="issueDetails" name="issue_details">
+                                        <option value="">Select a specific issue</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Description (Optional) -->
+                            <div class="form-group">
+                                <label>Description <span class="optional">(Optional)</span></label>
+                                <textarea name="description" placeholder="Please describe the issue in detail..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn" id="submitBtn">
+                                <i class="fas fa-paper-plane"></i> Submit Report
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Community Map Column -->
+                <div class="map-container">
+                    <div class="map-header">
+                        <h2>Community Map</h2>
+                        <p>What's happening around me</p>
+                        <div class="search-bar">
+                            <input type="text" id="searchAddress" placeholder="Search Address (e.g., Johannesburg, Soweto)">
+                            <button onclick="searchAddress()"><i class="fas fa-search"></i> Search</button>
+                        </div>
+                    </div>
+                    <div class="map-tabs">
+                        <div class="map-tab active" data-view="map">Map</div>
+                        <div class="map-tab" data-view="satellite">Satellite</div>
+                    </div>
+                    <div id="map"></div>
+                    <div class="map-legend">
+                        <h4><i class="fas fa-info-circle"></i> Map Legend</h4>
+                        <div class="legend-items">
+                            <div class="legend-item"><span class="legend-color red"></span> Streetlights</div>
+                            <div class="legend-item"><span class="legend-color green"></span> Water Leaks</div>
+                            <div class="legend-item"><span class="legend-color yellow"></span> Waste & Sanitation</div>
+                            <div class="legend-item"><span class="legend-color orange"></span> Roads & Potholes</div>
+                            <div class="legend-item"><span class="legend-color purple"></span> Environment & Public Health</div>
+                            <div class="legend-item"><span class="legend-color brown"></span> Parks, Trees & Biodiversity</div>
+                            <div class="legend-item"><span class="legend-color blue"></span> Electricity</div>
+                            <div class="legend-item"><span class="legend-color gray"></span> Infrastructure Projects</div>
+                            <div class="legend-item"><span class="legend-color lightblue"></span> Your Selection</div>
+                        </div>
+                        
+                        <div class="legend-note">
+                            <i class="fas fa-mouse-pointer"></i> Click on any existing issue pin to see details and updates
+                        </div>
+
+                        <div class="recent-activity">
+                            <h4><i class="fas fa-clock"></i> Recent Reports</h4>
+                            <div id="recentReports">
+                                <p style="font-size: 0.85rem; color:#666;">Loading reports...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CommUnity Reporta | Serving your community</p>
+            <p><i class="fas fa-flag-checkered"></i> Report issues | <i class="fas fa-search"></i> Track progress | <i class="fas fa-map"></i> Stay informed</p>
+            <p><a href="#" class="back-to-top"> Back to Top</a></p>
+        </div>
+    </footer>
+    
+    <!-- Location Popup -->
+    <div class="location-popup" id="locationPopup">
+        <div class="popup-header">
+            <h4><i class="fas fa-map-marker-alt"></i> Issues Near You</h4>
+            <span class="popup-close" onclick="closeLocationPopup()">&times;</span>
+        </div>
+        <div class="popup-body" id="popupBody">
+            <div class="no-issues">Loading issues...</div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing your report...</div>
+        <div class="loading-subtext">Please wait while we submit your issue</div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-check-circle modal-icon"></i>
+                <h3>Report Submitted Successfully</h3>
+            </div>
+            <div class="modal-body">
+                <p>Your reference number is:</p>
+                <div class="reference-box">
+                    <span class="reference-number" id="referenceNumber"></span>
+                    <button class="copy-btn" id="copyRefBtn" onclick="copyReference()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+                <p>Please save this number to check your report status later.</p>
+                <div id="modalDetails" style="font-size: 0.875rem; color: #666; margin-top: 1rem;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeModalAndTrack()">
+                    <i class="fas fa-search"></i> Track Report
+                </button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirm Modal (for changes) -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-question-circle modal-icon" style="color: #f39c12;"></i>
+                <h3>Confirm Submission</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to submit this report?</p>
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">Please review your information before submitting.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="confirmSubmit()">
+                    <i class="fas fa-check"></i> Yes, Submit
+                </button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeConfirmModal()">
+                    <i class="fas fa-edit"></i> Make Changes
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Accessibility Controls -->
+    <div class="accessibility-controls">
+        <div class="font-controls">
+            <button onclick="changeFontSize(-2)" class="accessibility-btn" title="Decrease Font Size">
+                <i class="fas fa-minus"></i> A
+            </button>
+            <button onclick="resetFontSize()" class="accessibility-btn" title="Reset Font Size">
+                <i class="fas fa-undo-alt"></i> A
+            </button>
+            <button onclick="changeFontSize(2)" class="accessibility-btn" title="Increase Font Size">
+                <i class="fas fa-plus"></i> A
+            </button>
+        </div>
+        <button id="readAloudBtn" onclick="toggleReadAloud()" class="accessibility-btn" title="Read Aloud">
+            <i class="fas fa-volume-up"></i> Read Aloud
+        </button>
+        <button id="stopReadingBtn" onclick="stopReading()" class="accessibility-btn" style="display:none;" title="Stop Reading">
+            <i class="fas fa-stop"></i> Stop
+        </button>
+    </div>
+    
+    <script>
+    // ============= FONT SIZE CONTROLS =============
+    function changeFontSize(delta) {
+        let currentSize = parseInt(localStorage.getItem('fontSize') || '16');
+        let newSize = Math.min(Math.max(currentSize + delta, 12), 24);
+        document.documentElement.style.fontSize = newSize + 'px';
+        localStorage.setItem('fontSize', newSize);
+        announce(`Font size changed to ${newSize} pixels`);
+    }
+    
+    function resetFontSize() {
+        document.documentElement.style.fontSize = '';
+        localStorage.removeItem('fontSize');
+        announce('Font size reset to default');
+    }
+    
+    // Load saved font size on page load
+    if (localStorage.getItem('fontSize')) {
+        document.documentElement.style.fontSize = localStorage.getItem('fontSize') + 'px';
+    }
+    
+    // ============= TEXT TO SPEECH (READ ALOUD) =============
+    let speechSynthesis = window.speechSynthesis;
+    let currentUtterance = null;
+    
+    function toggleReadAloud() {
+        if (currentUtterance && speechSynthesis.speaking) {
+            stopReading();
+            return;
+        }
+        
+        const mainContent = document.querySelector('main') || document.body;
+        const clone = mainContent.cloneNode(true);
+        
+        const removeSelectors = [
+            '.accessibility-controls',
+            '.accessibility-btn',
+            '.menu-toggle',
+            'button:not(.submit-btn):not(.location-btn)',
+            'script',
+            'style',
+            'nav .nav-menu'
+        ];
+        
+        removeSelectors.forEach(selector => {
+            const elements = clone.querySelectorAll(selector);
+            elements.forEach(el => el.remove());
+        });
+        
+        const text = clone.innerText.trim();
+        
+        if (!text) {
+            announce('No content to read');
+            return;
+        }
+        
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        currentUtterance.lang = 'en-ZA';
+        currentUtterance.rate = 0.9;
+        currentUtterance.pitch = 1;
+        currentUtterance.volume = 1;
+        
+        currentUtterance.onstart = function() {
+            const readBtn = document.getElementById('readAloudBtn');
+            const stopBtn = document.getElementById('stopReadingBtn');
+            if (readBtn) readBtn.style.display = 'none';
+            if (stopBtn) stopBtn.style.display = 'flex';
+            announce('Reading started');
+        };
+        
+        currentUtterance.onend = function() {
+            const readBtn = document.getElementById('readAloudBtn');
+            const stopBtn = document.getElementById('stopReadingBtn');
+            if (readBtn) readBtn.style.display = 'flex';
+            if (stopBtn) stopBtn.style.display = 'none';
+            currentUtterance = null;
+            announce('Reading finished');
+        };
+        
+        currentUtterance.onerror = function() {
+            const readBtn = document.getElementById('readAloudBtn');
+            const stopBtn = document.getElementById('stopReadingBtn');
+            if (readBtn) readBtn.style.display = 'flex';
+            if (stopBtn) stopBtn.style.display = 'none';
+            currentUtterance = null;
+            announce('Reading stopped due to error');
+        };
+        
+        speechSynthesis.speak(currentUtterance);
+    }
+    
+    function stopReading() {
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+        currentUtterance = null;
+        const readBtn = document.getElementById('readAloudBtn');
+        const stopBtn = document.getElementById('stopReadingBtn');
+        if (readBtn) readBtn.style.display = 'flex';
+        if (stopBtn) stopBtn.style.display = 'none';
+        announce('Reading stopped');
+    }
+    
+    // ============= SCREEN READER ANNOUNCEMENTS =============
+    function announce(message) {
+        let announcer = document.getElementById('liveAnnouncer');
+        if (!announcer) {
+            announcer = document.createElement('div');
+            announcer.id = 'liveAnnouncer';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            announcer.style.position = 'absolute';
+            announcer.style.width = '1px';
+            announcer.style.height = '1px';
+            announcer.style.padding = '0';
+            announcer.style.margin = '-1px';
+            announcer.style.overflow = 'hidden';
+            announcer.style.clip = 'rect(0, 0, 0, 0)';
+            announcer.style.whiteSpace = 'nowrap';
+            announcer.style.border = '0';
+            document.body.appendChild(announcer);
+        }
+        announcer.textContent = message;
+        setTimeout(() => {
+            announcer.textContent = '';
+        }, 3000);
+    }
+    
+    // ============= KEYBOARD SHORTCUTS =============
+    document.addEventListener('keydown', function(e) {
+        if (e.altKey && e.key === 'r') {
+            e.preventDefault();
+            toggleReadAloud();
+        }
+        if (e.altKey && e.key === '+') {
+            e.preventDefault();
+            changeFontSize(2);
+        }
+        if (e.altKey && e.key === '-') {
+            e.preventDefault();
+            changeFontSize(-2);
+        }
+        if (e.altKey && e.key === '0') {
+            e.preventDefault();
+            resetFontSize();
+        }
+    });
+    
+    // ============= DATA =============
+    let map;
+    let markers = [];
+    let formDataToSubmit = null;
+    let reports = [];
+    
+    const issueDetailsMap = {
+        'streetlights': ['Streetlight not working', 'Streetlight flickering', 'Streetlight on during day', 'Streetlight damaged pole', 'Streetlight wiring exposed', 'Multiple streetlights out'],
+        'water': ['Water pipe burst', 'Water leak on pavement', 'Low water pressure', 'No water supply', 'Water meter issue', 'Water contamination', 'Leaking fire hydrant'],
+        'waste': ['Bin not collected', 'Illegal dumping', 'Recycling not collected', 'Overflowing bins', 'Missed collection day', 'Bulky waste removal needed', 'Dumping site clean-up'],
+        'pothole': ['Large pothole', 'Deep pothole', 'Multiple potholes', 'Road sinking', 'Uneven road surface', 'Road edge collapse', 'Manhole cover damaged'],
+        'environment': ['Air pollution', 'Noise pollution', 'Chemical spill', 'Stagnant water', 'Mosquito breeding', 'Sewage smell', 'Dead animal removal'],
+        'parks': ['Fallen tree', 'Overgrown grass', 'Broken bench', 'Playground equipment damaged', 'Litter in park', 'Irrigation system broken', 'Fence damaged'],
+        'electricity': ['Power outage', 'Faulty transformer', 'Exposed wires', 'Voltage fluctuation', 'Sparks from pole', 'Cable theft', 'Tripping circuit breaker'],
+        'infrastructure': ['Road construction', 'Bridge damage', 'Sidewalk broken', 'Drainage issue', 'Culvert blockage', 'Traffic light out', 'Street name sign missing']
+    };
+    
+    // ============= HELPER FUNCTIONS =============
+    function getStatusColor(status) {
+        const colors = { 'Reported': '#e74c3c', 'In Progress': '#f39c12', 'Assigned': '#3498db', 'Resolved': '#27ae60', 'Verified': '#f39c12', 'Rejected': '#95a5a6' };
+        return colors[status] || '#95a5a6';
+    }
+    
+    function getCategoryDisplay(category) {
+        const map = { 
+            'streetlight': 'Streetlights', 
+            'water': 'Water Leaks', 
+            'waste': 'Waste & Sanitation', 
+            'pothole': 'Roads & Potholes', 
+            'environment': 'Environment & Public Health', 
+            'parks': 'Parks, Trees & Biodiversity', 
+            'electricity': 'Electricity', 
+            'infrastructure': 'Infrastructure Projects' 
+        };
+        return map[category] || category;
+    }
+    
+    function getCategoryColor(category) {
+        const map = { 'streetlight': 'red', 'water': 'green', 'waste': 'yellow', 'pothole': 'orange', 'environment': 'purple', 'parks': 'brown', 'electricity': 'blue', 'infrastructure': 'gray' };
+        return map[category] || 'gray';
+    }
+    
+    // ============= DATABASE FUNCTIONS =============
+    async function fetchReports() {
+        try {
+            console.log("Fetching reports from database...");
+            const response = await fetch('/report/api/reports/');
+            const data = await response.json();
+            console.log("Fetched reports:", data);
+            
+            if (data.success) {
+                reports = data.reports;
+                console.log("Loaded", reports.length, "reports");
+                refreshMap();
+                updateRecentReports();
+            } else {
+                console.error("Error fetching reports:", data.error);
+            }
+        } catch (error) {
+            console.error("Error fetching reports:", error);
+        }
+    }
+    
+    function refreshMap() {
+        if (!map) return;
+        
+        markers.forEach(marker => map.removeLayer(marker));
+        markers = [];
+        
+        const colorMap = { 
+            'red': '#e74c3c', 'green': '#27ae60', 'yellow': '#f1c40f', 'orange': '#e67e22',
+            'purple': '#9b59b6', 'brown': '#8e5e3c', 'blue': '#3498db', 'gray': '#95a5a6' 
+        };
+        
+        reports.forEach(report => {
+            const marker = L.circleMarker([report.lat, report.lng], { 
+                radius: 10, 
+                fillColor: colorMap[report.color] || '#95a5a6', 
+                color: '#fff', 
+                weight: 2, 
+                fillOpacity: 0.8 
+            }).addTo(map);
+            
+            marker.bindPopup(`
+                <b>${report.name}</b><br>
+                <strong>Category:</strong> ${report.categoryDisplay}<br>
+                <strong>Status:</strong> ${report.status}<br>
+                <strong>Reported:</strong> ${report.reportedDate}<br>
+                <strong>Reference:</strong> ${report.reference_number}<br>
+                <strong>Location:</strong> ${report.location}<hr>
+                ${report.details}
+            `);
+            markers.push(marker);
+        });
+        
+        console.log("Added", markers.length, "markers to map");
+    }
+    
+    function updateRecentReports() {
+        const container = document.getElementById('recentReports');
+        if (!container) return;
+        
+        if (reports.length === 0) {
+            container.innerHTML = '<p style="font-size: 0.9rem; color:#666;">No recent reports yet.</p>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        const latestReports = [...reports].sort((a, b) => {
+            return new Date(b.reportedDate) - new Date(a.reportedDate);
+        }).slice(0, 3);
+        
+        latestReports.forEach(report => {
+            const item = document.createElement('div');
+            item.classList.add('recent-item');
+            item.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <div>
+                        <strong style="font-size: 0.85rem; color: #2c3e50;">${report.name}</strong><br>
+                        <span style="color:#666; font-size: 0.75rem;">${report.categoryDisplay}</span>
+                    </div>
+                    <span style="font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; background: ${report.status === 'Reported' ? '#fee2e2' : '#e8f5e9'}; color: ${report.status === 'Reported' ? '#e74c3c' : '#27ae60'};">${report.status}</span>
+                </div>
+                <div style="font-size: 0.75rem; color: #555; margin: 5px 0;">
+                    <i class="fas fa-map-marker-alt" style="width: 16px; color: #27ae60;"></i> ${report.location}
+                </div>
+                <div style="font-size: 0.7rem; color: #888; margin: 3px 0;">
+                    <i class="fas fa-calendar-alt" style="width: 16px;"></i> ${report.reportedDate}
+                </div>
+                <div style="font-size: 0.7rem; color: #27ae60; margin-top: 3px;">
+                    <i class="fas fa-hashtag"></i> ${report.reference_number}
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+    
+    // ============= MAP FUNCTIONS =============
+    function initMap() {
+        map = L.map('map').setView([-26.2041, 28.0473], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+            attribution: '© OpenStreetMap contributors' 
+        }).addTo(map);
+        console.log("Map initialized");
+    }
+    
+    // ============= SEARCH FUNCTIONS =============
+    window.searchAddress = function() {
+        const address = document.getElementById('searchAddress').value;
+        if (!address) return;
+        
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}, South Africa&limit=1`)
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const lat = data[0].lat;
+                    const lng = data[0].lon;
+                    map.setView([lat, lng], 13);
+                    L.marker([lat, lng]).addTo(map)
+                        .bindPopup(`<b>${address}</b><br>Click to use this location`)
+                        .openPopup()
+                        .on('click', () => {
+                            document.getElementById('location').value = address;
+                        });
+                } else {
+                    alert('Location not found. Please try a different address.');
+                }
+            })
+            .catch(() => alert('Could not search for location.'));
+    };
+    
+    window.getCurrentLocation = function() {
+        if (navigator.geolocation) {
+            const btn = document.querySelector('.location-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            navigator.geolocation.getCurrentPosition(pos => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                btn.innerHTML = '<i class="fas fa-location-dot"></i>';
+                map.setView([lat, lng], 14);
+                L.marker([lat, lng]).addTo(map).bindPopup('Your current location').openPopup();
+            }, () => { 
+                btn.innerHTML = '<i class="fas fa-location-dot"></i>'; 
+                alert('Could not get location.'); 
+            });
+        } else {
+            alert('Geolocation is not supported by your browser.');
+        }
+    };
+    
+    // ============= MODAL FUNCTIONS =============
+    window.closeConfirmModal = function() { 
+        document.getElementById('confirmModal').classList.remove('active'); 
+    };
+    
+    window.closeModal = function() { 
+        document.getElementById('confirmationModal').classList.remove('active'); 
+    };
+    
+    window.copyReference = function() {
+        const ref = document.getElementById('referenceNumber').innerText;
+        navigator.clipboard.writeText(ref).then(() => {
+            const btn = document.getElementById('copyRefBtn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { 
+                btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; 
+                btn.classList.remove('copied'); 
+            }, 2000);
+        });
+    };
+    
+    window.closeModalAndTrack = function() {
+        const ref = document.getElementById('referenceNumber').innerText;
+        document.getElementById('confirmationModal').classList.remove('active');
+        window.location.href = `/track/?ref=${ref}`;
+    };
+    
+    // ============= FORM SUBMISSION =============
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const location = document.getElementById('location').value.trim();
+        const selectedCategory = document.querySelector('.category-btn.active');
+        const issueDetails = document.getElementById('issueDetails').value;
+        
+        if (!location) {
+            alert('Please enter the location where the issue is occurring.');
+            document.getElementById('location').focus();
+            return;
+        }
+        
+        if (!selectedCategory) {
+            alert('Please select the type of issue you are reporting.');
+            return;
+        }
+        
+        if (!issueDetails) {
+            alert('Please select the specific issue details.');
+            return;
+        }
+        
+        let backendValue = '';
+        const category = selectedCategory.dataset.category;
+        switch(category) {
+            case 'streetlights': backendValue = 'streetlight'; break;
+            case 'water': backendValue = 'water'; break;
+            case 'waste': backendValue = 'waste'; break;
+            case 'pothole': backendValue = 'pothole'; break;
+            case 'environment': backendValue = 'environment'; break;
+            case 'parks': backendValue = 'parks'; break;
+            case 'electricity': backendValue = 'electricity'; break;
+            case 'infrastructure': backendValue = 'infrastructure'; break;
+        }
+        
+        document.getElementById('issue_type').value = backendValue;
+        
+        formDataToSubmit = new FormData(this);
+        formDataToSubmit.append('issue_details', issueDetails);
+        formDataToSubmit.append('issue_type', backendValue);
+        
+        document.getElementById('confirmModal').classList.add('active');
+    });
+    
+    window.confirmSubmit = function() {
+        if (!formDataToSubmit) {
+            alert('Please fill out the form first.');
+            return;
+        }
+        
+        window.closeConfirmModal();
+        document.getElementById('loadingOverlay').classList.add('active');
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('/report/', {
+            method: 'POST',
+            body: formDataToSubmit,
+            headers: { 'X-CSRFToken': csrfToken }
+        })
+        .then(response => response.json())
+        .then(async data => {
+            document.getElementById('loadingOverlay').classList.remove('active');
+            
+            if (data.success) {
+                document.getElementById('referenceNumber').innerText = data.reference_number;
+                let detailsHtml = `<i class="fas fa-map-marker-alt"></i> ${data.location}<br>`;
+                detailsHtml += `<i class="fas fa-tag"></i> ${data.issue_details}<br>`;
+                detailsHtml += `<i class="fas fa-calendar"></i> ${data.date}`;
+                document.getElementById('modalDetails').innerHTML = detailsHtml;
+                document.getElementById('confirmationModal').classList.add('active');
+                
+                await fetchReports();
+                
+                document.getElementById('reportForm').reset();
+                document.getElementById('photo-preview').classList.remove('active');
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('issueDetailsGroup').classList.remove('active');
+                formDataToSubmit = null;
+            } else {
+                alert(data.error || 'Submission failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            document.getElementById('loadingOverlay').classList.remove('active');
+            console.error('Error:', error);
+            alert('Connection error. Please try again.');
+        });
+    };
+    
+    // ============= UI FUNCTIONS =============
+    window.previewPhoto = function(input) {
+        const preview = document.getElementById('photo-preview');
+        const previewImg = document.getElementById('preview-image');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.classList.add('active');
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.classList.remove('active');
+        }
+    };
+    
+    window.toggleMenu = function() {
+        document.getElementById('navMenu').classList.toggle('active');
+    };
+    
+    // ============= CATEGORY SELECTION =============
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const category = this.dataset.category;
+            const issueDetailsGroup = document.getElementById('issueDetailsGroup');
+            const issueDetailsSelect = document.getElementById('issueDetails');
+            
+            let backendValue = '';
+            switch(category) {
+                case 'streetlights': backendValue = 'streetlight'; break;
+                case 'water': backendValue = 'water'; break;
+                case 'waste': backendValue = 'waste'; break;
+                case 'pothole': backendValue = 'pothole'; break;
+                case 'environment': backendValue = 'environment'; break;
+                case 'parks': backendValue = 'parks'; break;
+                case 'electricity': backendValue = 'electricity'; break;
+                case 'infrastructure': backendValue = 'infrastructure'; break;
+            }
+            document.getElementById('issue_type').value = backendValue;
+            
+            const details = issueDetailsMap[category] || [];
+            issueDetailsSelect.innerHTML = '<option value="">Select a specific issue</option>';
+            details.forEach(detail => {
+                issueDetailsSelect.innerHTML += `<option value="${detail}">${detail}</option>`;
+            });
+            issueDetailsGroup.classList.add('active');
+        });
+    });
+    
+    // ============= MAP VIEW TOGGLE =============
+    document.querySelectorAll('.map-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.map-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const view = this.dataset.view;
+            map.eachLayer(layer => { if (layer instanceof L.TileLayer) map.removeLayer(layer); });
+            if (view === 'satellite') {
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(map);
+            } else {
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+            }
+        });
+    });
+    
+    // ============= INITIALIZE =============
+    window.onclick = function(event) {
+        if (event.target === document.getElementById('confirmModal')) window.closeConfirmModal();
+        if (event.target === document.getElementById('confirmationModal')) window.closeModal();
+    };
+    
+    document.addEventListener('DOMContentLoaded', async function() {
+        initMap();
+        await fetchReports();
+        announce('Page loaded. Use Alt + R to read aloud, Alt + Plus or Minus to adjust font size.');
+        console.log("Page loaded, map initialized with", reports.length, "reports");
+    });
+    </script>
+</body>
+</html>

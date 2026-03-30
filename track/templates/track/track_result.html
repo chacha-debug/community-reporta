@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Issue - CommUnity Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #27ae60;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .nav-menu li a:hover {
+            color: #27ae60;
+        }
+        
+        .nav-menu li a.active {
+            color: #27ae60;
+        }
+        
+        .nav-menu li a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #27ae60;
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 200px);
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Track Form */
+        .track-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .track-form h2 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .track-form p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 0.875rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: monospace;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+        
+        .input-group button {
+            padding: 0.875rem 1.5rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .input-group button:hover {
+            background: #219a52;
+        }
+        
+        .example {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: #999;
+        }
+        
+        /* Report Card */
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .reference-number {
+            font-family: monospace;
+            font-size: 1.25rem;
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .status-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .status-reported { background: #fee2e2; color: #e74c3c; }
+        .status-verified { background: #fff3cd; color: #f39c12; }
+        .status-assigned { background: #e8e2fe; color: #9b59b6; }
+        .status-in_progress { background: #d4e6f1; color: #3498db; }
+        .status-resolved { background: #e8f5e9; color: #27ae60; }
+        .status-rejected { background: #e9ecef; color: #95a5a6; }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            background: #ecf0f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .progress-step.completed .step-circle {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .progress-step.active .step-circle {
+            background: #f39c12;
+            color: white;
+            box-shadow: 0 0 0 3px rgba(243,156,18,0.3);
+        }
+        
+        .step-label {
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .progress-step.completed .step-label,
+        .progress-step.active .step-label {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .description {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .description p {
+            margin-top: 0.5rem;
+            color: #555;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            border-left: 4px solid #e74c3c;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #c0392b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .footer p {
+            margin: 0.5rem 0;
+        }
+        
+        .footer a {
+            color: #27ae60;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-bar {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .progress-step {
+                flex: none;
+                width: calc(33.33% - 0.67rem);
+            }
+
+            .back-to-top {
+    color: #27ae60;      
+    font-weight: bold;
+    text-decoration: underline;
+    transition: color 0.3s, transform 0.3s;
+}
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">CommUnity <span>Reporta</span></a>
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/report/">Report Issue</a></li>
+                <li><a href="/track/" class="active">Track Issue</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="container">
+            {% if show_form %}
+            <!-- Track Form -->
+            <div class="track-form">
+                <h2>Track Your Report</h2>
+                <p>Enter your reference number to check the current status</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="reference_number" placeholder="e.g., WTR-20260330-123456" required>
+                        <button type="submit"><i class="fas fa-arrow-right"></i> Track</button>
+                    </div>
+                    <div class="example">
+                        <i class="fas fa-info-circle"></i> Example: WTR-20260330-123456 
+                    </div>
+                </form>
+            </div>
+            {% elif found %}
+            <!-- Report Found - Display Details -->
+            <div class="report-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-flag-checkered"></i> Report Status</h2>
+                    <div class="reference-number">
+                        <i class="fas fa-hashtag"></i> {{ report.reference_number }}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Status Badge -->
+                    <div class="status-section">
+                        <span class="status-badge status-{{ report.status_code }}">
+                            <i class="fas fa-info-circle"></i> {{ report.status }}
+                        </span>
+                        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">
+                            <i class="fas fa-clock"></i> Last updated: {{ report.updated_at }}
+                        </p>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-bar">
+                        <div class="progress-step {% if report.status_code == 'reported' %}active{% endif %} {% if report.status_code in 'verified,assigned,in_progress,resolved' %}completed{% endif %}">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Reported</div>
+                        </div>
+                        <div class="progress-step {% if report.status_code == 'verified' %}active{% endif %} {% if report.status_code in 'assigned,in_progress,resolved' %}completed{% endif %}">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Verified</div>
+                        </div>
+                        <div class="progress-step {% if report.status_code == 'assigned' %}active{% endif %} {% if report.status_code in 'in_progress,resolved' %}completed{% endif %}">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Assigned</div>
+                        </div>
+                        <div class="progress-step {% if report.status_code == 'in_progress' %}active{% endif %} {% if report.status_code == 'resolved' %}completed{% endif %}">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">In Progress</div>
+                        </div>
+                        <div class="progress-step {% if report.status_code == 'resolved' %}active completed{% endif %}">
+                            <div class="step-circle">5</div>
+                            <div class="step-label">Resolved</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Issue Details -->
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-tag"></i> Issue Type</div>
+                            <div class="info-value">{{ report.issue_type }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-map-marker-alt"></i> Location</div>
+                            <div class="info-value">{{ report.location }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-calendar"></i> Reported Date</div>
+                            <div class="info-value">{{ report.created_at }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-hourglass-half"></i> Days Ago</div>
+                            <div class="info-value">{{ report.days_ago }} day{{ report.days_ago|pluralize }}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    {% if report.description %}
+                    <div class="description">
+                        <div class="info-label"><i class="fas fa-align-left"></i> Description</div>
+                        <p>{{ report.description }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Photo (if available) -->
+                    {% if report.photo %}
+                    <div style="margin: 1rem 0;">
+                        <div class="info-label"><i class="fas fa-camera"></i> Photo</div>
+                        <img src="{{ report.photo }}" alt="Issue Photo" style="max-width: 100%; border-radius: 8px; margin-top: 0.5rem;">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="/report/" class="btn btn-secondary">
+                            <i class="fas fa-flag"></i> Report New Issue
+                        </a>
+                        <a href="/" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Error - Report Not Found -->
+            <div class="track-form">
+                <h2><i class="fas fa-search"></i> Track Your Report</h2>
+                <p>Enter your reference number to check the current status</p>
+                
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="reference_number" placeholder="e.g., WTR-20260330-123456" required>
+                        <button type="submit"><i class="fas fa-arrow-right"></i> Track</button>
+                    </div>
+                    <div class="example">
+                        <i class="fas fa-info-circle"></i> Example: WTR-20260330-123456 (found in your SMS confirmation)
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CommUnity Reporta | Serving your community</p>
+            <p><i class="fas fa-flag-checkered"></i> Report issues | <i class="fas fa-search"></i> Track progress | <i class="fas fa-map"></i> Stay informed</p>
+            <p><a href="#" class="back-to-top">Back to Top</a></p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
