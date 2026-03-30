@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+myenvironment/
+ENV/
+env.bak/
+venv.bak/
+
+__pycache__/
+*.pyc
+db.sqlite3
+media/
+myenvironment/
+.vscode/
+.DS_Store
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Database
+*.sqlite3
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# Media files
+media/reports/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
