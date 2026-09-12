@@ -5,213 +5,303 @@
 
 {% block extra_css %}
 <style>
-    /* Hero */
+    /* Hero — warm, friendly, welcoming */
     .hero {
-        background: linear-gradient(135deg, #2c3e50 0%, #27ae60 100%);
-        color: white;
+        position: relative;
         text-align: center;
-        padding: 6rem 2rem 5rem;
-        border-radius: 0 0 30px 30px;
-        margin: -2rem -2rem 0;
+        padding: 5rem 2rem 6rem;
+        margin: -2.5rem -2rem 0;
+        background: linear-gradient(180deg, var(--brand-soft) 0%, var(--bg) 100%);
+        overflow: hidden;
+    }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -100px; left: 50%;
+        transform: translateX(-50%);
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, rgba(45,106,79,0.12), transparent 60%);
+        pointer-events: none;
+    }
+    .hero-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 780px;
+        margin: 0 auto;
+    }
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        color: var(--brand-dark);
+        padding: 0.5rem 1rem;
+        border-radius: var(--r-full);
+        font-size: 0.82rem;
+        font-weight: 600;
+        box-shadow: var(--sh-sm);
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border);
+    }
+    .hero-eyebrow .dot {
+        width: 8px; height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.3); }
     }
     .hero h1 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        animation: fadeInUp 0.8s ease;
+        font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.25rem;
+        color: var(--ink);
+    }
+    .hero h1 em {
+        font-style: normal;
+        color: var(--brand);
+        position: relative;
+        white-space: nowrap;
+    }
+    .hero h1 em::after {
+        content: '';
+        position: absolute;
+        bottom: 0.05em; left: 0; right: 0;
+        height: 0.35em;
+        background: rgba(231,111,81,0.25);
+        z-index: -1;
+        border-radius: 4px;
     }
     .hero p {
-        font-size: 1.2rem;
-        max-width: 600px;
-        margin: 0 auto 2rem;
-        opacity: 0.95;
-        animation: fadeInUp 0.8s ease 0.1s both;
+        font-size: 1.15rem;
+        color: var(--muted);
+        max-width: 580px;
+        margin: 0 auto 2.25rem;
+        line-height: 1.6;
     }
     .hero-buttons {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         justify-content: center;
         flex-wrap: wrap;
-        animation: fadeInUp 0.8s ease 0.2s both;
+        margin-bottom: 2.5rem;
     }
-    .hero .btn-secondary {
-        color: white;
-        border-color: white;
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2.5rem;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        color: var(--muted);
     }
-    .hero .btn-secondary:hover {
-        background: white;
-        color: #27ae60;
-    }
+    .hero-stats span { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .hero-stats strong { color: var(--ink); font-weight: 700; }
 
     /* Services */
     .services-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
+        gap: 1.5rem;
     }
     .service-card {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s;
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        padding: 2rem 1.75rem;
+        border: 1px solid var(--border);
+        box-shadow: var(--sh-sm);
+        transition: all 0.3s var(--ease);
+        position: relative;
+        overflow: hidden;
     }
     .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        transform: translateY(-6px);
+        box-shadow: var(--sh-lg);
+        border-color: var(--brand-light);
     }
-    .service-icon {
-        font-size: 2.75rem;
-        color: #27ae60;
-        margin-bottom: 1rem;
+    .service-icon-wrap {
+        width: 56px; height: 56px;
+        border-radius: var(--r-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+        background: var(--brand-soft);
+        color: var(--brand);
     }
-    .service-card h3 {
-        color: #2c3e50;
-        margin-bottom: 1rem;
+    .service-card:nth-child(2) .service-icon-wrap {
+        background: var(--accent-soft);
+        color: var(--accent);
     }
-    .service-card p {
-        color: #666;
+    .service-card:nth-child(3) .service-icon-wrap {
+        background: #e0f0f5;
+        color: var(--info);
     }
+    .service-card h3 { margin-bottom: 0.6rem; color: var(--ink); }
+    .service-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
 
     /* About */
     .about-text h3 {
-        color: #2c3e50;
-        margin: 1.5rem 0 0.75rem;
-        font-size: 1.5rem;
+        color: var(--ink);
+        margin: 1.75rem 0 0.75rem;
+        font-size: 1.35rem;
     }
-    .about-text p {
-        color: #555;
-        margin-bottom: 1rem;
-        line-height: 1.8;
-    }
+    .about-text h3:first-child { margin-top: 0; }
+    .about-text p { color: var(--ink-2); margin-bottom: 1rem; line-height: 1.75; }
+
     .stats {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
+        gap: 1rem;
         margin-top: 2rem;
     }
     .stat-item {
         text-align: center;
-        padding: 1.5rem;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 1.75rem 1rem;
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--sh-sm);
+        transition: all 0.3s var(--ease);
     }
+    .stat-item:hover { transform: translateY(-3px); box-shadow: var(--sh-md); }
     .stat-number {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #27ae60;
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: var(--brand);
+        line-height: 1;
+        margin-bottom: 0.4rem;
     }
-    .stat-label {
-        color: #666;
-        font-size: 0.9rem;
-    }
+    .stat-label { color: var(--muted); font-size: 0.85rem; font-weight: 500; }
 
     /* Contact */
     .contact-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+        gap: 2rem;
     }
     .contact-info, .contact-form {
-        background: white;
-        border-radius: 15px;
+        background: var(--surface);
+        border-radius: var(--r-lg);
         padding: 2rem;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        border: 1px solid var(--border);
+        box-shadow: var(--sh-md);
     }
     .contact-info h3, .contact-form h3 {
-        color: #2c3e50;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
     }
     .info-item {
         display: flex;
         align-items: center;
         gap: 1rem;
-        margin: 1.25rem 0;
+        margin: 1rem 0;
         padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        transition: transform 0.3s;
+        background: var(--surface-warm);
+        border-radius: var(--r-md);
+        border: 1px solid var(--border);
+        transition: transform 0.2s var(--ease);
     }
-    .info-item:hover { transform: translateX(5px); }
+    .info-item:hover { transform: translateX(4px); }
     .info-icon {
-        font-size: 1.5rem;
-        color: #27ae60;
-        width: 32px;
-        text-align: center;
+        font-size: 1.1rem;
+        color: var(--brand);
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--brand-soft);
+        border-radius: var(--r-sm);
+        flex-shrink: 0;
     }
-    .info-text h4 { color: #2c3e50; margin-bottom: 0.25rem; font-size: 0.95rem; }
-    .info-text p { color: #666; font-size: 0.9rem; }
+    .info-text h4 { color: var(--ink); margin-bottom: 0.15rem; font-size: 0.95rem; }
+    .info-text p { color: var(--muted); font-size: 0.88rem; }
+
     .submit-btn {
-        background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
+        background: var(--brand);
         color: white;
         border: none;
-        padding: 12px 30px;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: bold;
+        padding: 0.9rem 2rem;
+        border-radius: var(--r-full);
+        font-size: 0.95rem;
+        font-weight: 600;
         cursor: pointer;
         width: 100%;
-        transition: transform 0.3s;
+        transition: all 0.2s var(--ease);
+        box-shadow: 0 4px 14px rgba(45,106,79,0.25);
+        font-family: 'Inter', sans-serif;
     }
-    .submit-btn:hover { transform: translateY(-2px); }
-    .submit-btn.loading { background: #95a5a6; cursor: not-allowed; }
+    .submit-btn:hover {
+        background: var(--brand-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(45,106,79,0.35);
+    }
+    .submit-btn.loading { background: var(--muted); cursor: not-allowed; }
 
     /* Modal */
     .contact-modal {
         display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
+        position: fixed; inset: 0;
+        background: rgba(26,26,26,0.5);
+        backdrop-filter: blur(6px);
         z-index: 3000;
         justify-content: center;
         align-items: center;
-        backdrop-filter: blur(5px);
+        padding: 1rem;
     }
     .contact-modal.active { display: flex; }
     .contact-modal-content {
-        background: white;
-        border-radius: 20px;
-        max-width: 450px;
-        width: 90%;
-        animation: fadeInUp 0.3s ease;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        padding: 2rem;
+        background: var(--surface);
+        border-radius: var(--r-xl);
+        max-width: 460px;
+        width: 100%;
+        padding: 2.5rem 2rem;
         text-align: center;
+        box-shadow: var(--sh-lg);
+        animation: fadeInUp 0.3s var(--ease);
+        border: 1px solid var(--border);
     }
     .modal-success-icon {
-        font-size: 4rem;
-        color: #27ae60;
-        margin-bottom: 0.5rem;
+        font-size: 3.5rem;
+        color: var(--brand);
+        margin-bottom: 0.75rem;
     }
     .message-details {
-        background: #f8f9fa;
+        background: var(--surface-warm);
         padding: 1rem;
-        border-radius: 8px;
-        margin-top: 1rem;
+        border-radius: var(--r-md);
+        margin-top: 1.25rem;
         text-align: left;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
+        border: 1px solid var(--border);
     }
-    .message-details p { margin: 0.5rem 0; color: #2c3e50; }
-    .message-details strong { color: #27ae60; }
+    .message-details p { margin: 0.4rem 0; color: var(--ink-2); }
+    .message-details strong { color: var(--brand-dark); }
     .modal-close-btn {
-        background: #27ae60;
+        background: var(--brand);
         color: white;
         border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
+        padding: 0.75rem 1.75rem;
+        border-radius: var(--r-full);
         cursor: pointer;
         font-weight: 600;
         margin-top: 1.5rem;
-        transition: all 0.3s;
+        transition: all 0.2s var(--ease);
+        font-family: 'Inter', sans-serif;
     }
-    .modal-close-btn:hover { background: #219a52; transform: translateY(-2px); }
+    .modal-close-btn:hover { background: var(--brand-dark); transform: translateY(-2px); }
 
     @media (max-width: 768px) {
-        .hero { padding: 4rem 1rem 3rem; margin: -1rem -1rem 0; }
-        .hero h1 { font-size: 2rem; }
-        .stats { grid-template-columns: 1fr; }
+        .hero { padding: 3rem 1.25rem 4rem; margin: -1.5rem -1.25rem 0; }
+        .stats { grid-template-columns: repeat(2, 1fr); }
         .contact-container { grid-template-columns: 1fr; }
+        .hero-stats { gap: 1.25rem; font-size: 0.82rem; }
     }
 </style>
 {% endblock %}
@@ -221,11 +311,26 @@
 {% block content %}
 
 <section class="hero">
-    <h1>Welcome to CommUnity Reporta</h1>
-    <p>Report and track service delivery issues in your community. Together, we can make our neighborhood better.</p>
-    <div class="hero-buttons">
-        <a href="{% url 'report_issue' %}" class="btn btn-primary">Report an Issue</a>
-        <a href="{% url 'track_issue' %}" class="btn btn-secondary">Track an Issue</a>
+    <div class="hero-inner">
+        <div class="hero-eyebrow">
+            <span class="dot"></span>
+            <span>Live in South African communities</span>
+        </div>
+        <h1>Together, we build <em>better</em> neighbourhoods.</h1>
+        <p>Report potholes, water leaks, broken streetlights, and other service delivery issues. Track them in real-time. Hold your municipality accountable.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'report_issue' %}" class="btn btn-primary">
+                <i class="fas fa-flag"></i> Report an Issue
+            </a>
+            <a href="{% url 'track_issue' %}" class="btn btn-secondary">
+                <i class="fas fa-search"></i> Track a Report
+            </a>
+        </div>
+        <div class="hero-stats">
+            <span><strong id="heroTotal">—</strong> issues reported</span>
+            <span><strong id="heroResolved">—</strong> resolved</span>
+            <span><strong>8</strong> categories</span>
+        </div>
     </div>
 </section>
 
@@ -235,19 +340,19 @@
         <p class="section-subtitle">Comprehensive solutions for community service delivery</p>
         <div class="services-grid">
             <div class="service-card">
-                <div class="service-icon"><i class="fas fa-flag"></i></div>
+                <div class="service-icon-wrap"><i class="fas fa-flag"></i></div>
                 <h3>Report Issues</h3>
                 <p>Submit service delivery issues with photos and location. Potholes, water leaks, electricity faults, and more.</p>
             </div>
             <div class="service-card">
-                <div class="service-icon"><i class="fas fa-search-location"></i></div>
+                <div class="service-icon-wrap"><i class="fas fa-search-location"></i></div>
                 <h3>Track Progress</h3>
                 <p>Enter your reference number to check the current status of your report in real-time.</p>
             </div>
             <div class="service-card">
-                <div class="service-icon"><i class="fas fa-map-marked-alt"></i></div>
+                <div class="service-icon-wrap"><i class="fas fa-map-marked-alt"></i></div>
                 <h3>Community Map</h3>
-                <p>View all reported issues in your neighborhood. See what's been reported and what's been fixed.</p>
+                <p>View all reported issues in your neighbourhood. See what's been reported and what's been fixed.</p>
             </div>
         </div>
     </div>
@@ -281,7 +386,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-number" id="statCategories">—</div>
-                    <div class="stat-label">Categories Covered</div>
+                    <div class="stat-label">Categories</div>
                 </div>
             </div>
         </div>
@@ -364,7 +469,7 @@
     <div class="contact-modal-content">
         <i class="fas fa-check-circle modal-success-icon"></i>
         <h3>Message Sent Successfully!</h3>
-        <p style="color:#666;">Thank you for reaching out! We'll get back to you within 24–48 hours.</p>
+        <p style="color:#666;">Thank you for reaching out! We'll get back to you within 24 – 48 hours.</p>
         <div id="contactMessageDetails" class="message-details"></div>
         <button class="modal-close-btn" onclick="closeContactModal()">
             <i class="fas fa-times"></i> Close
@@ -393,6 +498,8 @@
             document.getElementById('statResolved').textContent = resolved;
             document.getElementById('statPending').textContent = inProgress;
             document.getElementById('statCategories').textContent = categories;
+            document.getElementById('heroTotal').textContent = total;
+            document.getElementById('heroResolved').textContent = resolved;
         } catch (e) {
             console.error('Failed to load stats', e);
         }

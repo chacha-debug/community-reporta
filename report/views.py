@@ -65,7 +65,7 @@ def get_reports(request):
 
 def report_issue(request):
     """Display and process the report issue form"""
-    
+
     if request.method == 'POST':
         # Get form data
         photo = request.FILES.get('photo')
@@ -73,35 +73,46 @@ def report_issue(request):
         issue_type = request.POST.get('issue_type')
         issue_details = request.POST.get('issue_details')
         description = request.POST.get('description')
-        
+
         # Validate required fields
         if not location:
             return JsonResponse({
                 'success': False,
                 'error': 'Please enter the location where the issue is occurring.'
             })
-        
+
         if not issue_type:
             return JsonResponse({
                 'success': False,
                 'error': 'Please select the type of issue you are reporting.'
             })
-        
+
         if not issue_details:
             return JsonResponse({
                 'success': False,
                 'error': 'Please select the specific issue details.'
             })
-        
-        # Geocode the address to get coordinates
-        print(f"Geocoding address: {location}")
-        lat, lng = geocode_address(location)
-        print(f"Coordinates: {lat}, {lng}")
-        
+
+        # Prefer exact coordinates if the user picked their location on the client
+        client_lat = request.POST.get('latitude')
+        client_lng = request.POST.get('longitude')
+
+        if client_lat and client_lng:
+            try:
+                lat, lng = float(client_lat), float(client_lng)
+                print(f"Using client-provided coordinates: {lat}, {lng}")
+            except (TypeError, ValueError):
+                lat, lng = geocode_address(location)
+                print(f"Geocoded (fallback): {lat}, {lng}")
+        else:
+            print(f"Geocoding address: {location}")
+            lat, lng = geocode_address(location)
+            print(f"Coordinates: {lat}, {lng}")
+
         # Generate reference number
         today = datetime.datetime.now()
         date_str = today.strftime('%Y%m%d')
-        
+
         type_codes = {
             'streetlight': 'STL',
             'water': 'WTR',
@@ -112,11 +123,11 @@ def report_issue(request):
             'electricity': 'ELC',
             'infrastructure': 'INF'
         }
-        
+
         type_code = type_codes.get(issue_type, 'GEN')
         random_num = ''.join(random.choices(string.digits, k=6))
         reference_number = f"{type_code}-{date_str}-{random_num}"
-        
+
         # Save to database with coordinates
         try:
             report = Report.objects.create(
@@ -128,20 +139,20 @@ def report_issue(request):
                 latitude=lat,
                 longitude=lng
             )
-            
+
             if photo:
                 report.photo = photo
                 report.save()
-                
-            print(f"✅ Report saved: {reference_number} at ({lat}, {lng})")
-            
+
+            print(f"Report saved: {reference_number} at ({lat}, {lng})")
+
         except Exception as e:
-            print(f"❌ Error saving: {e}")
+            print(f"Error saving: {e}")
             return JsonResponse({
                 'success': False,
                 'error': 'Database error. Please try again.'
             })
-        
+
         # Return success response
         return JsonResponse({
             'success': True,
@@ -154,6 +165,6 @@ def report_issue(request):
             'latitude': lat,
             'longitude': lng
         })
-    
+
     # GET request - display form
     return render(request, 'report/report_form.html')

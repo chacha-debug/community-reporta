@@ -25,6 +25,7 @@ myenvironment/
 *.pyc
 local_settings.py
 db.sqlite3
+db.sqlite3-journal
 media/
 staticfiles/
 
@@ -51,3 +52,4 @@ media/reports/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+.DS_Store

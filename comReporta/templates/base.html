@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CommUnity Reporta{% endblock %}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}
@@ -34,16 +36,18 @@
 
 <footer class="footer">
     <div class="container">
-        <p>© {% now "Y" %} CommUnity Reporta | Serving your community</p>
-        <p>
-            <i class="fas fa-flag-checkered"></i> Report issues |
-            <i class="fas fa-search"></i> Track progress |
+        <p style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;color:white;margin-bottom:0.75rem;">
+            CommUnity <span style="color:var(--brand-light);">Reporta</span>
+        </p>
+        <p>© {% now "Y" %} CommUnity Reporta — Serving South African communities</p>
+        <p style="margin-top:0.75rem;opacity:0.7;">
+            <i class="fas fa-flag-checkered"></i> Report issues &nbsp;·&nbsp;
+            <i class="fas fa-search"></i> Track progress &nbsp;·&nbsp;
             <i class="fas fa-map"></i> Stay informed
         </p>
     </div>
 </footer>
 
-<!-- Accessibility Controls -->
 <div class="accessibility-controls">
     <div class="font-controls">
         <button onclick="changeFontSize(-2)" class="accessibility-btn" title="Decrease Font Size" aria-label="Decrease font size">
@@ -56,10 +60,10 @@
             <i class="fas fa-plus"></i> A
         </button>
     </div>
-    <button id="readAloudBtn" onclick="toggleReadAloud()" class="accessibility-btn" title="Read Aloud" aria-label="Read page aloud">
+    <button id="readAloudBtn" onclick="toggleReadAloud()" class="accessibility-btn" title="Read Aloud">
         <i class="fas fa-volume-up"></i> Read Aloud
     </button>
-    <button id="stopReadingBtn" onclick="stopReading()" class="accessibility-btn" style="display:none;" title="Stop Reading" aria-label="Stop reading">
+    <button id="stopReadingBtn" onclick="stopReading()" class="accessibility-btn" style="display:none;" title="Stop Reading">
         <i class="fas fa-stop"></i> Stop
     </button>
 </div>
@@ -69,6 +73,10 @@
     function toggleMenu() {
         document.getElementById('navMenu').classList.toggle('active');
     }
+    // Header shrink on scroll
+    window.addEventListener('scroll', () => {
+        document.getElementById('header').classList.toggle('scrolled', window.scrollY > 30);
+    });
 </script>
 {% block extra_js %}{% endblock %}
 

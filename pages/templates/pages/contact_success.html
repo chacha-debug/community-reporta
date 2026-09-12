@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Message Sent | CommUnity Reporta{% endblock %}
+
+{% block content %}
+<div style="max-width:500px;margin:3rem auto;background:white;border-radius:20px;padding:40px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+    <i class="fas fa-check-circle" style="font-size:64px;color:#27ae60;margin-bottom:20px;"></i>
+    <h1 style="color:#27ae60;margin-bottom:15px;">Message Sent!</h1>
+    <p style="color:#666;margin-bottom:25px;">
+        Thank you for reaching out, <strong>{{ name }}</strong>!<br>
+        We'll get back to you within 24–48 hours.
+    </p>
+    <a href="{% url 'home' %}" class="btn btn-primary">
+        <i class="fas fa-home"></i> Back to Home
+    </a>
+</div>
+{% endblock %}
