@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
 from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,16 +128,12 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en'
 
 LANGUAGES = [
-    ('en', _('English')),
-    ('af', _('Afrikaans')),
-    ('zu', _('isiZulu')),
-    ('xh', _('isiXhosa')),
-    ('st', _('Sesotho')),
-    ('tn', _('Setswana')),
-]
-
-LOCALE_PATHS = [
-    BASE_DIR / 'locale',
+    ('en', 'English'),
+    ('af', 'Afrikaans'),
+    ('zu', 'isiZulu'),
+    ('xh', 'isiXhosa'),
+    ('st', 'Sesotho'),
+    ('tn', 'Setswana'),
 ]
 
 TIME_ZONE = 'Africa/Johannesburg'
