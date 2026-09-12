@@ -58,7 +58,7 @@ ROOT_URLCONF = 'comReporta.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'comReporta' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,15 +110,22 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en'
 
+LANGUAGES = [
+    ('en', _('English')),
+    ('af', _('Afrikaans')),
+    ('zu', _('isiZulu')),
+    ('xh', _('isiXhosa')),
+    ('st', _('Sesotho')),
+    ('tn', _('Setswana')),
+]
+
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Johannesburg'
 
 USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = True
 
@@ -126,7 +133,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'comReporta' / 'static']
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

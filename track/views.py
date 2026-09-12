@@ -1,3 +1,5 @@
+from time import timezone
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from report.models import Report
@@ -32,8 +34,18 @@ def track_issue(request):
                 }
                 
                 # Calculate days since reported
-                from datetime import datetime
-                days_ago = (datetime.now().date() - report.created_at.date()).days
+                from django.utils import timezone
+                days_ago = (timezone.now().date() - report.created_at.date()).days
+                # Progress tracking for timeline
+                status_order = ['reported', 'verified', 'assigned', 'in_progress', 'resolved']
+                current_idx = status_order.index(report.status) if report.status in status_order else 0
+                report_data['progress'] = {
+                    'reported':    {'done': current_idx >= 0, 'active': current_idx == 0},
+                    'verified':    {'done': current_idx > 0,  'active': current_idx == 1},
+                    'assigned':    {'done': current_idx > 1,  'active': current_idx == 2},
+                    'in_progress': {'done': current_idx > 2,  'active': current_idx == 3},
+                    'resolved':    {'done': current_idx > 3,  'active': current_idx == 4},
+                }
                 report_data['days_ago'] = days_ago
                 
                 return render(request, 'track/track_result.html', {

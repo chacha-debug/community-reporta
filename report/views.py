@@ -3,9 +3,9 @@ import random
 import string
 import json
 import urllib.request
+import urllib.parse
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from .models import Report
 
 def geocode_address(address):
@@ -63,7 +63,6 @@ def get_reports(request):
         return JsonResponse({'success': False, 'error': str(e), 'reports': []})
 
 
-@csrf_exempt
 def report_issue(request):
     """Display and process the report issue form"""
     

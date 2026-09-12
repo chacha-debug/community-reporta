@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CommUnity Reporta{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="header" id="header">
+    <div class="header-container">
+        <div class="logo">
+            <a href="{% url 'home' %}">CommUnity <span>Reporta</span></a>
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="{% url 'home' %}" class="{% block nav_home %}{% endblock %}">Home</a></li>
+            <li><a href="{% url 'report_issue' %}" class="{% block nav_report %}{% endblock %}">Report Issue</a></li>
+            <li><a href="{% url 'track_issue' %}" class="{% block nav_track %}{% endblock %}">Track Issue</a></li>
+        </ul>
+    </div>
+</header>
+
+<main class="main-content">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© {% now "Y" %} CommUnity Reporta | Serving your community</p>
+        <p>
+            <i class="fas fa-flag-checkered"></i> Report issues |
+            <i class="fas fa-search"></i> Track progress |
+            <i class="fas fa-map"></i> Stay informed
+        </p>
+    </div>
+</footer>
+
+<!-- Accessibility Controls -->
+<div class="accessibility-controls">
+    <div class="font-controls">
+        <button onclick="changeFontSize(-2)" class="accessibility-btn" title="Decrease Font Size" aria-label="Decrease font size">
+            <i class="fas fa-minus"></i> A
+        </button>
+        <button onclick="resetFontSize()" class="accessibility-btn" title="Reset Font Size" aria-label="Reset font size">
+            <i class="fas fa-undo-alt"></i> A
+        </button>
+        <button onclick="changeFontSize(2)" class="accessibility-btn" title="Increase Font Size" aria-label="Increase font size">
+            <i class="fas fa-plus"></i> A
+        </button>
+    </div>
+    <button id="readAloudBtn" onclick="toggleReadAloud()" class="accessibility-btn" title="Read Aloud" aria-label="Read page aloud">
+        <i class="fas fa-volume-up"></i> Read Aloud
+    </button>
+    <button id="stopReadingBtn" onclick="stopReading()" class="accessibility-btn" style="display:none;" title="Stop Reading" aria-label="Stop reading">
+        <i class="fas fa-stop"></i> Stop
+    </button>
+</div>
+
+<script src="{% static 'js/accessibility.js' %}"></script>
+<script>
+    function toggleMenu() {
+        document.getElementById('navMenu').classList.toggle('active');
+    }
+</script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

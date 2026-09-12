@@ -33,6 +33,6 @@ for report in reports:
     report.latitude = lat
     report.longitude = lng
     report.save()
-    print(f"✅ Updated {report.reference_number}: {lat}, {lng}")
+    print(f" Updated {report.reference_number}: {lat}, {lng}")
 
-print(f"\n✅ Done! Updated {count} reports")
+print(f"\n Done! Updated {count} reports")
