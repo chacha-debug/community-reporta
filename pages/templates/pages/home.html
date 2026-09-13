@@ -6,30 +6,37 @@
 {% block extra_css %}
 <style>
     /* Hero — warm, friendly, welcoming */
-    .hero {
-        position: relative;
-        text-align: center;
-        padding: 5rem 2rem 6rem;
-        margin: -2.5rem -2rem 0;
-        background: linear-gradient(180deg, var(--brand-soft) 0%, var(--bg) 100%);
-        overflow: hidden;
-    }
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: -100px; left: 50%;
-        transform: translateX(-50%);
-        width: 800px; height: 800px;
-        background: radial-gradient(circle, rgba(45,106,79,0.12), transparent 60%);
-        pointer-events: none;
-    }
-    .hero-inner {
-        position: relative;
-        z-index: 1;
-        max-width: 780px;
-        margin: 0 auto;
-    }
-    .hero-eyebrow {
+    /* Hero — warm, friendly, welcoming */
+.hero {
+    position: relative;
+    text-align: center;
+    padding: 4rem 1.5rem 5rem;
+    background: linear-gradient(180deg, var(--brand-soft) 0%, var(--bg) 100%);
+    overflow: hidden;
+    /* No negative margins — sits between header and main-content */
+    border-radius: 0 0 var(--r-xl) var(--r-xl);
+    margin-bottom: -3rem;   /* overlap slightly with main-content padding */
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 800px;
+    max-width: 100vw;
+    background: radial-gradient(circle, rgba(45,106,79,0.12), transparent 60%);
+    pointer-events: none;
+}
+
+.hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+.hero-eyebrow {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
@@ -152,6 +159,10 @@
     }
     .about-text h3:first-child { margin-top: 0; }
     .about-text p { color: var(--ink-2); margin-bottom: 1rem; line-height: 1.75; }
+
+    body:has(.hero) .main-content {
+        padding-top: 0;
+    }
 
     .stats {
         display: grid;
@@ -298,7 +309,7 @@
     .modal-close-btn:hover { background: var(--brand-dark); transform: translateY(-2px); }
 
     @media (max-width: 768px) {
-        .hero { padding: 3rem 1.25rem 4rem; margin: -1.5rem -1.25rem 0; }
+        .hero { padding: 3rem 1.25rem 4rem; margin-bottom: -2rem;}
         .stats { grid-template-columns: repeat(2, 1fr); }
         .contact-container { grid-template-columns: 1fr; }
         .hero-stats { gap: 1.25rem; font-size: 0.82rem; }
@@ -308,9 +319,9 @@
 
 {% block nav_home %}active{% endblock %}
 
-{% block content %}
-
+{% block hero %}
 <section class="hero">
+
     <div class="hero-inner">
         <div class="hero-eyebrow">
             <span class="dot"></span>
@@ -333,6 +344,10 @@
         </div>
     </div>
 </section>
+
+{% endblock %}
+
+{% block content %}
 
 <section class="section">
     <div class="container">

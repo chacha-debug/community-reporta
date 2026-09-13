@@ -1,5 +1,7 @@
 # CommUnity Reporta
 
+**🔗 Live demo: [community-reporta.vercel.app](https://community-reporta.vercel.app)**
+
 A community service delivery platform for reporting and tracking issues like potholes, water leaks, and electricity faults in South Africa.
 
 ![Homepage screenshot](docs/screenshots/home.png)
