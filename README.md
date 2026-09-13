@@ -17,10 +17,7 @@ A community service delivery platform for reporting and tracking issues like pot
 
 ## Tech Stack
 
-- **Backend:** Django 6, SQLite
-- **Frontend:** Vanilla JavaScript, Font Awesome, Leaflet
-- **Geocoding:** OpenStreetMap Nominatim API
-- **Deployment:** Render
+Django 6 · PostgreSQL (Neon) · Leaflet · OpenStreetMap Nominatim · Vercel
 
 ## Local Setup
 
